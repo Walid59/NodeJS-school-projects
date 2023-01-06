@@ -25,26 +25,27 @@ export default class RequestController {
 
     buildResponse()  {
         if (this.#url.pathname == '/') {
-            builder = new HTMLResponseBuilder(this.#response);
+            let builder = new HTMLResponseBuilder(this.#request,this.#response);
             builder.buildResponse();
+            this.#response.write(`<p><strong>no path defined</strong></p>`);
         }
         else if (this.#url.pathname.startsWith('/first') ){
-            builder = new firstResponseBuilder(this.#response);
+            let builder = new firstResponseBuilder(this.#request,this.#response);
             builder.buildResponse();
         }
 
         else if (this.#url.pathname.startsWith('/second') ){
-            builder = new secondResponseBuilder(this.#response);
+            let builder = new secondResponseBuilder(this.#request,this.#response);
             builder.buildResponse();
         }
 
         else if (this.#url.pathname.startsWith('/json') ){
-            builder = new thirdResponseBuilder(this.#response);
+            let builder = new thirdResponseBuilder(this.#request,this.#response);
             builder.buildResponse();
         }
 
         else {
-            builder = new notFoundResponseBuilder(this.#response);
+            let builder = new notFoundResponseBuilder(this.#request,this.#response);
             builder.buildResponse();        
         }
 
