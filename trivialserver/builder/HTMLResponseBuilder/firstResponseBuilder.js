@@ -5,5 +5,6 @@ export default class firstResponseBuilder extends HTMLResponseBuilder {
         super.buildResponse();
         const nameValue = this._url.searchParams.get('name') || 'unknown';
         this._response.write(`<p>Welcome to first page, <strong> ${nameValue}</strong></p>`);
+        super.finishResponse();
     }
 }
