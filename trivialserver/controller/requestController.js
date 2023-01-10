@@ -4,6 +4,7 @@ import firstResponseBuilder from '../builder/HTMLResponseBuilder/firstResponseBu
 import HTMLResponseBuilder from '../builder/HTMLResponseBuilder/HTMLResponseBuilder.js';
 import notFoundResponseBuilder from '../builder/HTMLResponseBuilder/notFoundResponse.js';
 import secondResponseBuilder from '../builder/HTMLResponseBuilder/secondResponseBuilder.js';
+import RandomResponseBuilder from '../builder/JSONResponseBuilder/randomResponseBuilder.js';
 import thirdResponseBuilder from '../builder/JSONResponseBuilder/thirdResponseBuilder.js';
 
 export default class RequestController {
@@ -41,6 +42,11 @@ export default class RequestController {
 
         else if (this.#url.pathname.startsWith('/json') ){
             let builder = new thirdResponseBuilder(this.#request,this.#response);
+            builder.buildResponse();
+        }
+
+        else if (this.#url.pathname.startsWith('/random') ){
+            let builder = new RandomResponseBuilder(this.#request,this.#response);
             builder.buildResponse();
         }
 
