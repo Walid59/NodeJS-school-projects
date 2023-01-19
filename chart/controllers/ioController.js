@@ -2,6 +2,7 @@
 export default class IOController {
     #io;
     #clients;
+    #intervalID;
 
     constructor(io) {
         this.#io = io;
@@ -10,24 +11,33 @@ export default class IOController {
 
     registerSocket(socket) {
         console.log(`new connection with id ${socket.id}`);
+        socket.emit("ping"); //send ping to client
         this.setupListeners(socket);
+        this.setupInterval(socket);
     }
 
     setupListeners(socket) {
-        socket.on('pong', () => console.log("pong"))
-        socket.on( 'greatings'  , user => this.greatings(socket, user.name) );
+        socket.on("pong", () => console.log('pong from ', socket.id)); //receive pong from client
         socket.on( 'disconnect' , () => this.leave(socket) );
     }
 
-    greatings(socket, userName) {
-        //console.log(`greatings received from ${userName} (id : ${socket.id})`);
-        console.log('pong');
-        this.#clients.set(socket.id, userName);
-        socket.emit('welcome');
+    leave(socket) {
+        console.log(`disconnection from ${socket.id}`);
+        clearInterval(this.#intervalID);
     }
 
-    leave(socket) {
-        const userName = this.#clients.get(socket.id) || 'unknown';
-        console.log(`disconnection from ${socket.id} (user : ${userName})`);
+    sendRandomVal(socket){
+        const randomVal = this.RandomIntInclusive(2,8);
+        socket.emit("val",randomVal);
     }
+
+    setupInterval(socket){
+        this.#intervalID = setInterval(this.sendRandomVal.bind(this), 2000, socket);
+    }
+
+    RandomIntInclusive(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min +1)) + min;
+      }
 }

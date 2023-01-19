@@ -7,9 +7,9 @@ const server = http.createServer(
 	(request, response) => new RequestController(request, response).handleRequest()
 );
 
+ 
 const io = new IOServer(server);
 const ioController = new IOController(io);
 io.on('connection', socket => ioController.registerSocket(socket) );
-io.on('greatings',()=> console.log("ping"));
-io.on('test', socket => socket.emit('pong'));
+  
 server.listen(8080);
