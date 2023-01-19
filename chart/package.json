@@ -10,6 +10,7 @@
   "author": "Jean-Christophe Routier",
   "license": "ISC",
   "dependencies": {
+    "chartio": "^1.0.5",
     "socket.io": "^4.5.4"
   }
 }

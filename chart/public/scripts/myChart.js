@@ -8,6 +8,9 @@ const MAX_VALUE = 10;
 const allLabels = new Array(nbValues).fill(defaultValue).map( (_,i) => String.fromCharCode('A'.charCodeAt(0)+i));
 //const allLabels = ['J','F','M','A','M','J','J','A','S','O','N','D'];
 
+const displayMessage = msg => document.getElementById('messageZone').appendChild(buildMessage(msg));
+const socket = io()
+socket.on('connection', () => socket.send("Hello"));
 
 const ctxt = document.getElementById('myChart').getContext('2d');
 
