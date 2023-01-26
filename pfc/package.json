@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "projet pierre feuilles ciseaux jsfs 22-23 groupe 2",
   "main": "main.js",
+  "type": "module",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -13,7 +15,8 @@
   "author": "walid.rouabah.etu@univ-lille.fr",
   "license": "ISC",
   "dependencies": {
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "socket.io": "^4.5.4",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   }
 }

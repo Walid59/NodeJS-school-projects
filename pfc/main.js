@@ -1,7 +1,16 @@
 // fichier main.js
-import add from './add.js';
 
-const displayResult = () => {
+import http from 'http';
+import RequestController from './controllers/requestController.js';
+import { Server as IOServer } from 'socket.io';
+import IOController from './controllers/ioController.js';
 
-  result.value = add(xvalue,yvalue);
-}
+const server = http.createServer(
+	(request, response) => new RequestController(request, response).handleRequest()
+);
+
+ 
+const io = new IOServer(server);
+const ioController = new IOController(io);
+  
+server.listen(8080);
