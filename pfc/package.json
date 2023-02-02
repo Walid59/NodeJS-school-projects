@@ -15,8 +15,12 @@
   "author": "walid.rouabah.etu@univ-lille.fr",
   "license": "ISC",
   "dependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "socket.io": "^4.5.4",
+    "url": "^0.11.0",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "webpack-cli": "^4.9.1",
+    "webpack-node-externals": "^3.0.0"
   }
 }
