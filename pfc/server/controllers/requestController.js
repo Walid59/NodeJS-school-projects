@@ -30,17 +30,31 @@ export default class RequestController {
 
   async handleRequest() {
     this.response.setHeader("Content-Type" , getContentTypeFrom(this.url) );
-    await this.buildResponse();
+     if(getContentTypeFrom(this.url) == ""){
+      if(this.url == "/"){
+        await this.buildResponse(null);
+      }
+      else if(this.url == '/pfc'){
+        await this.buildResponse('/public/pfc.html');
+      }else if(this.url == '/about'){
+        await this.buildResponse('/public/about.html');
+      }else if(this.url == '/index'){
+        await this.buildResponse('/public/index.html');
+      }else{
+        this.response.statusCode = 404;
+        this.response.write('erreur');
+      }
+    }
     this.response.end();
   }
 
 
-  async buildResponse()  {
+  async buildResponse(param)  {
     try {
         // check if resource is available
-        await fs.access(`./public/${this.url}`);
+        await fs.access(param);
         // read the requested resource content
-        const data = await fs.readFile(`./public/${this.url}`);
+        const data = await fs.readFile(param);
         // send resource content
         this.response.statusCode = 200;
         this.response.write(data);
