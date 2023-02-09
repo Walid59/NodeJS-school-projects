@@ -36,14 +36,11 @@ export default class RequestController {
 
 
   async buildResponse()  {
-    //this.response.write('<h1>Pierre, Feuilles, Ciseaux!</h1>');
-    //this.response.write('<ul> <li> <a href="http://localhost:8080/pfc"> Acces au jeu! </a> </li> <li> <a href="http://localhost:8080/about"> Numero de version et les auteurs du jeu... </li> </a> </ul>');
-
     try {
         // check if resource is available
-        await fs.access(`.${this.url}`);
+        await fs.access(`./public/${this.url}`);
         // read the requested resource content
-        const data = await fs.readFile(`.${this.url}`);
+        const data = await fs.readFile(`./public/${this.url}`);
         // send resource content
         this.response.statusCode = 200;
         this.response.write(data);
@@ -53,7 +50,6 @@ export default class RequestController {
         this.response.write('erreur');
     }
   }
-
 
 }
 
