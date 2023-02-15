@@ -1,14 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
-<<<<<<< HEAD
 
 # Webstorm
 .idea/
 
-=======
-# Webstorm
-.idea
->>>>>>> projet
+# bundle js
+server/public/scripts/bundle.js
 ### Node ###
 # Logs
 logs
