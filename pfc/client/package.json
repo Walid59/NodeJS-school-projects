@@ -1,0 +1,24 @@
+{
+  "name": "pfc",
+  "version": "1.0.0",
+  "description": "projet pierre feuilles ciseaux jsfs 22-23 groupe 2",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab-etu.fil.univ-lille.fr/walid.rouabah.etu/jsfs2_rouabah_walid"
+  },
+  "author": "walid.rouabah.etu@univ-lille.fr",
+  "license": "ISC",
+  "dependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "socket.io": "^4.5.4",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  }
+}
