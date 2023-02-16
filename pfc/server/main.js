@@ -1,5 +1,3 @@
-// fichier main.js
-
 import http from 'http';
 import RequestController from './controllers/requestController.js';
 import { Server as IOServer } from 'socket.io';

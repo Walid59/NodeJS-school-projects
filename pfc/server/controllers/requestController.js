@@ -32,14 +32,12 @@ export default class RequestController {
     this.response.setHeader("Content-Type" , getContentTypeFrom(this.url) );
      if(getContentTypeFrom(this.url) == ""){
       if(this.url == "/"){
-        await this.buildResponse(null);
+        await this.buildResponse('./public/index.html');
       }
       else if(this.url == '/pfc'){
-        await this.buildResponse('/public/pfc.html');
+        await this.buildResponse('./public/pfc.html');
       }else if(this.url == '/about'){
-        await this.buildResponse('/public/about.html');
-      }else if(this.url == '/index'){
-        await this.buildResponse('/public/index.html');
+        await this.buildResponse('./public/about.html');
       }else{
         this.response.statusCode = 404;
         this.response.write('erreur');

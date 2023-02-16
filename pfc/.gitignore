@@ -5,7 +5,8 @@
 .idea/
 
 # bundle js
-server/public/scripts/bundle.js
+server/public/
+
 ### Node ###
 # Logs
 logs
