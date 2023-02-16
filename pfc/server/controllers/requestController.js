@@ -41,7 +41,6 @@ export default class RequestController {
     } else {
       await this.buildResponse(`./public${this.url}`);
     }
-    
     this.response.end();
   }
 

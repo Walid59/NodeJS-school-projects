@@ -1,6 +1,7 @@
 const socket = io();
 const text = document.getElementById("text");
 socket.on('playersStatus',(arg) => {
+    text.innerHTML = "";
     text.append(arg);
     console.log(arg);
 }
