@@ -6,7 +6,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const PRODUCTION = false;
 const OUTPATH = PRODUCTION ? '../server/public' : '../server/public';
 module.exports = {
-  entry: path.resolve(__dirname, 'public/scripts/pfc.js'),
+  entry: './public/scripts/pfc.js',
   mode: PRODUCTION ? 'production' : 'development',
   target: "node",
 
