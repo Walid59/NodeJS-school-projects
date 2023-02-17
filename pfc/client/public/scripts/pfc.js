@@ -1,12 +1,14 @@
 const socket = io();
-const text = document.getElementById("text");
-socket.on('playersStatus',(arg) => {
-    text.innerHTML = "";
-    text.append(arg);
-    console.log(arg);
-}
-);
-console.log("stpppp");
 
+socket.on('playersStatus', (arg, arg2) => {
+        const text = document.getElementById("text");
+        text.innerHTML = "";
+        text.append(arg);
+        if (arg2) {
+            document.querySelectorAll('button.RPS').forEach(elem => {
+                elem.disabled = false;
+            });
+        }
+    }
+);
 //const submit = document.getElementById("submit");
-//rien ne fonctionne, tout est vide lors du build.

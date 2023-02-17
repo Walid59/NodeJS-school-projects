@@ -31,15 +31,15 @@ export default class RequestController {
   async handleRequest() {
 
 
-    if (this.url == "/") {
+    if (this.url === "/") {
       await this.buildResponse('./public/index.html');
     }
-    else if (this.url == '/pfc') {
+    else if (this.url === '/pfc') {
       await this.buildResponse('./public/pfc.html');
-    } else if (this.url == '/about') {
+    } else if (this.url === '/about') {
       await this.buildResponse('./public/about.html');
     } else {
-      await this.buildResponse(`./public${this.url}`);
+      await this.buildResponse(`./public/${this.url}`);
     }
     this.response.end();
   }

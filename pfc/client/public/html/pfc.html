@@ -4,24 +4,30 @@
                 <link href="/style/pfc.css" type="text/css" rel="stylesheet"/>
         </head>
         <body>
-                <button class="Rock"
-                        type="button">
+        <!-- onclick="chosenElement('r')" !-->
+                <button class="RPS"
+                        type="button" disabled>
                         Rock
                 </button>
+        <img src="/images/rock.svg" alt="rock" rel="stylesheet">
 
-                <button class="Paper"
-                        type="button">
+                <button onclick="chosenElement('p')" class="RPS"
+                        type="button" disabled>
                         Paper
                 </button>
+        <img src="/images/paper.svg" alt="paper">
 
-                <button class="Scissors"
-                        type="button">
+
+        <button onclick="chosenElement('s')" class="RPS"
+                        type="button" disabled>
                         Scissors
                 </button>
+        <img src="/images/scissors.svg" alt="scissors">
 
-                <p id="text"></p>
-                <button id="submit"
-                        type="button">
+
+        <p id="text"></p>
+                <button id="submit" class="RPS"
+                        type="button" disabled>
                         Submit
                 </button>
         </body>

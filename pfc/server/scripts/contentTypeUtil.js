@@ -16,5 +16,6 @@ export const getContentTypeFrom = path => {
                                 .set('.txt',"plain/text")
                                 .set('.png',"image/png")
                                 .set('.js', 'application/javascript')
-                                .set('.json', 'application/json');
+                                .set('.json', 'application/json')
+                                .set('.svg', 'image/svg+xml');
   
