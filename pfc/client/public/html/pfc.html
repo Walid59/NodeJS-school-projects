@@ -1,34 +1,20 @@
 <html>
-        <head>    
-                <script src="/socket.io/socket.io.js"></script>
-                <link href="/style/pfc.css" type="text/css" rel="stylesheet"/>
-        </head>
-        <body>
-        <!-- onclick="chosenElement('r')" !-->
-                <button class="RPS"
-                        type="button" disabled>
-                        Rock
-                </button>
-        <img src="/images/rock.svg" alt="rock" rel="stylesheet">
-
-                <button onclick="chosenElement('p')" class="RPS"
-                        type="button" disabled>
-                        Paper
-                </button>
-        <img src="/images/paper.svg" alt="paper">
-
-
-        <button onclick="chosenElement('s')" class="RPS"
-                        type="button" disabled>
-                        Scissors
-                </button>
-        <img src="/images/scissors.svg" alt="scissors">
-
+    <head>
+        <script src="/socket.io/socket.io.js"></script>
+        <link href="/style/pfc.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div>
+            <input type="image" id="rock" class="RPS" alt="rock" src="/images/rock.svg" >
+            <input type="image" id="paper" class="RPS" alt="paper" src="/images/paper.svg">
+            <input type="image" id="scissors" class="RPS" alt="scissors" src="/images/scissors.svg">
+        </div>
 
         <p id="text"></p>
-                <button id="submit" class="RPS"
-                        type="button" disabled>
-                        Submit
-                </button>
-        </body>
+        <p id="opponentResult">Waiting for opponent result...</p>
+        <button id="submit"
+                type="button" disabled>
+            Submit
+        </button>
+    </body>
 </html>

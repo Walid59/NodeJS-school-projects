@@ -61,6 +61,5 @@ export default class RequestController {
       this.response.write('erreur');
     }
   }
-
 }
 
