@@ -4,6 +4,11 @@ export default class IOController {
     gameStarted = false;
     static #clients = [];
 
+    static rounds  = 5;
+    currentRound = 1;
+    scorePlayer1 = 0;
+    scorePlayer2 = 0;
+
     constructor(io) {
         this.#io = io;
     }
@@ -24,7 +29,9 @@ export default class IOController {
             } else {
                 if (!this.gameStarted) {
                     this.gameStarted = true;
-                    this.startGame();
+                    IOController.#clients[0].removeAllListeners('playerPick');
+                    IOController.#clients[1].removeAllListeners('playerPick');
+                    this.playGame();
                     this.gameStarted = false;
                 }
             }
@@ -34,51 +41,71 @@ export default class IOController {
     }
 
 
-    startGame() {
-        console.log("game started: ", this.gameStarted);
-        IOController.#clients[0].emit('playersStatus', 'Player 1 : Game started. The disconnection of one of the 2 players cancels the game.', true); // en cas de connexion du deuxieme utilisateur, envoyer au socket qu'il peut lancer une game
-        IOController.#clients[1].emit('playersStatus', 'Player 2 : Game started. The disconnection of one of the 2 players cancels the game.', true);
-        this.gameListener();
+    playGame() {
+        let player1, player2;
+        player1 = IOController.#clients[0];
+        player2 = IOController.#clients[1];
+        player1.emit('playersStatus', 'Player 1 : Game started. The disconnection of one of the 2 players cancels the game.', true);
+        player2.emit('playersStatus', 'Player 2 : Game started. The disconnection of one of the 2 players cancels the game.', true);
+
+        player1.emit("round",`There are ${IOController.rounds} rounds. Current round : ${this.currentRound}. player1 : ${this.scorePlayer1} , player2 : ${this.scorePlayer2}`);
+        player2.emit("round",`There are ${IOController.rounds} rounds. Current round : ${this.currentRound}, player1 : ${this.scorePlayer1} , player2 : ${this.scorePlayer2}`);
+
+        //cas où le player1 est le premier à selectionner le RPC.
+        player1.on('playerPick', (choice1) => {
+            console.log(`Player 1 chose ${choice1}`);
+            player2.emit('playerStatus', "The opponent has validated his choice, please submit yours.", choice1);
+
+            player2.on('playerPick', (choice2) => {
+                console.log(`Player 2 chose ${choice2}`);
+                player1.emit('playerStatus', "The opponent has validated his choice, please submit yours.", choice2);
+
+                this.endOfTheGame(player1,player2);
+                this.currentRound++;
+
+
+            });
+        });
+
+        //cas où le player2 est le premier à selectionner le RPC.
+        player2.on('playerPick', (choice1) => {
+            console.log(`Player 1 chose ${choice1}`);
+            player1.emit('playerStatus', "The opponent has validated his choice, please submit yours.", choice1);
+
+            player2.on('playerPick', (choice2) => {
+                console.log(`Player 2 chose ${choice2}`);
+                player2.emit('playerStatus', "The opponent has validated his choice, please submit yours.", choice2);
+                this.endOfTheGame(player1,player2);
+                this.currentRound++;
+
+            });
+        });
+        if(this.currentRound === IOController.rounds){
+            this.scorePlayer1 = 0;
+            this.scorePlayer2 = 0;
+            this.currentRound = 0;
+        }
+
     }
 
+    endOfTheGame(player1, player2){ //permet de ne pas dupliquer le code
+        player1.on("win",(hasWin) => {
+            if(hasWin)
+                this.scorePlayer1++;
+        });
+        player2.on("win",(hasWin2) => {
+            if(hasWin2)
+                this.scorePlayer2++;
+        });
+        player1.emit("result");
+        player2.emit("result");
+
+        player1.removeAllListeners('playerPick');
+        player2.removeAllListeners('playerPick');
+        this.playGame();
+    }
     setupListeners(socket) {
         socket.on('disconnect', () => this.leave(socket));
-    }
-
-    gameListener() {
-        let hasSent, hasSent2 = false;
-        if (this.gameStarted) {
-            let setResult, setResult2 = false;
-            if (!hasSent) {
-                IOController.#clients[0].on('playerPick', (arg1) => {
-                    console.log("le premier joueur a validé son choix");
-                    //socket emit client[1] que le client 0 a validé son choix
-                    IOController.#clients[1].emit('playerStatus', "The opponent has validated his choice, please submit yours.", arg1);
-                    //faire en sorte sur le pfc.js de vérifier quel joueur a gagné grace au arg.
-                    setResult = true;
-                    if (setResult && setResult2) {
-                        IOController.#clients[0].emit("result", null);
-                        IOController.#clients[1].emit("result", null);
-                    }
-                    hasSent = true;
-                });
-            }
-
-            if (!hasSent2) {
-                IOController.#clients[1].on('playerPick', (arg) => {
-                    console.log("le deuxieme joueur a validé son choix");
-                    //socket emit client[0] que le client 1 a validé son choix
-                    IOController.#clients[0].emit('playerStatus', "The opponent has validated his choice, please submit yours.", arg);
-                    //faire en sorte sur le pfc.js de vérifier quel joueur a gagné grace au arg.
-                    setResult2 = true;
-                    if (setResult && setResult2) {
-                        IOController.#clients[0].emit("result");
-                        IOController.#clients[1].emit("result");
-                    }
-                    hasSent = true;
-                });
-            }
-        }
     }
 
     leave(socket) {
@@ -88,5 +115,4 @@ export default class IOController {
             this.gameManager(client);
         }
     }
-
 }
