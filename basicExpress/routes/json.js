@@ -3,6 +3,7 @@ var router = express.Router();
 
 const jsonController = require('../controllers/jsonController');
 
-router.get('/json', jsonController.some);
+router.all('/', jsonController.json);
+router.get('/random', jsonController.random);
 
 module.exports = router;
