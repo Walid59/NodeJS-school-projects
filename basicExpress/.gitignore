@@ -7,6 +7,9 @@
 # bundle js
 server/public/
 
+#mongodb files
+mongo_files
+
 ### Node ###
 # Logs
 logs

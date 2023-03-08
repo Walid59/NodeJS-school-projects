@@ -25,3 +25,15 @@ module.exports.second =
     };
     res.sendFile('html/second.html', options);
   }
+
+  module.exports.todo =
+  (_, res) => {
+    const options = {
+      root: 'public',
+      headers: {
+        'x-timestamp': Date.now(),
+        'x-sent': true
+      }
+    };
+    res.sendFile('html/todo.html', options);
+  }
