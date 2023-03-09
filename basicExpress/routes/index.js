@@ -11,4 +11,6 @@ router.get('/first', indexController.first);
 router.get('/second', indexController.second);
 
 router.get('/todo', indexController.todo);
+
+//router.get('/todo', indexController.list);
 module.exports = router;

@@ -10,6 +10,7 @@ const dbConnection = require('./controllers/db.controller.js');
 
 var indexRouter = require('./routes/index');
 var jsonRouter = require('./routes/json');
+var taskRouter = require('./routes/task');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/json',jsonRouter);
 app.use('/', indexRouter);
+app.use('/tasks', taskRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
