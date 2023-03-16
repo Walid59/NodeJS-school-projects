@@ -13,4 +13,4 @@ const dbConnection = require('../controllers/db.controller');  // importation de
 
 const Tasks = dbConnection.model('Task', taskSchema, 'tasks'); // création du modèle qui lie le schéma à la collection tasks
 
-module.exports.model = Tasks;
+module.exports.model = Tasks; 

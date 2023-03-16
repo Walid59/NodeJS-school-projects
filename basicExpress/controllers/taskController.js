@@ -1,3 +1,4 @@
+const { get } = require('../models/task.model');
 const { all } = require('../routes');
 
 const Tasks = require('../models/task.model').model;   // on récupère le modèle
@@ -9,6 +10,13 @@ const list = async (_, res) => {
 module.exports.list = list;
 
 
+const getTask =
+  async (req,res) => {
+    const book = await Tasks.findById( req.params.taskId );
+    res.status(200).json(book);
+  }
+module.exports.getTask = getTask;
+
 
 const create = async (req, res) => {
     const newTaskData = { ...req.body };
@@ -17,3 +25,5 @@ const create = async (req, res) => {
     console.log("tache creee");
 }
 module.exports.create = create;
+
+
