@@ -26,4 +26,17 @@ const create = async (req, res) => {
 }
 module.exports.create = create;
 
+const deleteTask =
+    async (req,res) => {
+        try {
+            await Tasks.findByIdAndRemove( req.params.taskId );
+            console.log(`--> task ${req.params.taskId} deleted`);
+            res.status(301).redirect('/todo');
+        }
+        catch(error) {
+            throw error ;
+        }
+    }
+
+module.exports.deleteTask = deleteTask;
 

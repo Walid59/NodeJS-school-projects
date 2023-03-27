@@ -8,6 +8,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index.route');
 var usersRouter = require('./routes/user.route');
 var accessRouter = require('./routes/access.route');
+var objectsRouter = require('./routes/object.route');
+
 
 
 //middlewares
@@ -30,8 +32,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/access', accessRouter);
+app.use('/objects', objectsRouter);
 
 app.use(errorMiddleware);
 

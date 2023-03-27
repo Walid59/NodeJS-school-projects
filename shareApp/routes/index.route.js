@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const authMiddleware = require('../middlewares/authentication.middleware');
+
+// import controller for index
+const indexController = require('../controllers/index.controller');
+
+
+router.get('/', authMiddleware.validToken, indexController.login );
+router.get('/about', indexController.about );
+router.get('/adminonly', authMiddleware.validToken, authMiddleware.isAdmin, indexController.adminonly );
+
+
+router.get('/home', indexController.home);
 
 module.exports = router;

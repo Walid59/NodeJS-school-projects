@@ -4,6 +4,8 @@
 # Webstorm
 .idea/
 
+/appData
+
 # bundle js
 server/public/
 
