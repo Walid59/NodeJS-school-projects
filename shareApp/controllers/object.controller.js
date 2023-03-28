@@ -27,7 +27,7 @@ const deleteObject =
         try {
             await Objects.findByIdAndRemove( req.params.objectId );
             console.log(`--> object ${req.params.objectId} deleted`);
-            res.status(301).redirect('/objects');
+            res.status(200).json(null);
         }
         catch(error) {
             throw error ;

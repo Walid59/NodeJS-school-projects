@@ -1,23 +1,31 @@
 let username;
 let description;
+let user;
 
 
 const displayMessage = msg => document.getElementById('content').textContent = msg;
 
-const getUser = async () => {
+const getCurrentUser = async () => {
     const requestOptions = {
-        method :'GET',
+        method: 'GET',
     };
     const response = await fetch('/user/me', requestOptions);
     if (response.ok) {
-        const user = await response.json();
-        username.value = user.name || '';
-    }
-    else {
+        user = await response.json();
+        username.textContent = `Welcome, ${user.name} !` || '';
+    } else {
         const error = await response.json();
         handleError(error);
     }
 }
+
+const handleError = error => {
+    if (error.redirectTo)
+        window.location.href = error.redirectTo;
+    else
+        console.log(`erreur : ${error.message}`);
+}
+
 
 const displayTable = async () => {
     const objectsTable = document.getElementById('list');
@@ -37,66 +45,57 @@ const buildTaskElement = object => {
     const objectElement = document.createElement('tr');
     objectElement.className = 'object';
     objectElement.appendChild(buildTD(object.description, 'description'));
-    objectElement.appendChild(buildTD(`(${object.ownerId.name})`, 'ownerName'));
-    const getButton = buildButton('read (GET)');
-    getButton.addEventListener('click', () => getTask(object._id));
-    objectElement.appendChild(getButton);
-    const deleteButton = buildButton('delete (DELETE)');
-    deleteButton.addEventListener('click', () => deleteTask(object._id, deleteButton));
+    objectElement.appendChild(buildTD(`(${getUser(object.ownerId).then(owner => owner.name)})`, 'ownerName'));
+    const deleteButton = buildButton('Supprimer l\'objet');
+    deleteButton.addEventListener('click', () => deleteObject(object._id, deleteButton));
     objectElement.appendChild(deleteButton);
 
     return objectElement;
 }
 
 const createObject =
-
     async () => {
         description = document.getElementById('desc');
-        const newObjectData = { description : description, ownerId: getUser()};
+        const newObjectData = {description: description.value, ownerId: user.id};
         const body = JSON.stringify(newObjectData);
         let requestOptions = {
-            method :'POST',
-            headers : { "Content-Type": "application/json" },
-            body : body
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: body
         };
-        const response = await fetch(`/objects/`, requestOptions);
-        const createdObject = await response.json();
-        JSONanswer.textContent = JSON.stringify(createdObject);
-        displayMessage("ajouté");
-        window.setTimeout( updateTable, 3000);
+        try{
+            const response = await fetch(`/objects/`, requestOptions);
+            const createdObject = await response.json();
+            displayMessage(createdObject.description + " ajouté");
+            await displayTable();
+        }
+        catch (Error){
+            displayMessage("error : restart the app");
+        }
     }
 
+ const getUser = async (ownerId) =>
+{
+    const requestOptions = {
+        method: 'GET'
+    };
+    const response = await fetch(`/user/${ownerId}`, requestOptions);
+    const owner = await response.json();
+    console.log(owner._id);
+    return owner;
+}
 
-const getTask =
-    async objectId => {
-        const requestOptions = {
-            method: 'GET'
-        };
-        const response = await fetch(`/objects/${objectId}`, requestOptions)
-        const object = await response.json()
-        JSONanswer.textContent = JSON.stringify(object);
-        window.setTimeout(updateTable, 3000);
 
-    }
-
-const deleteTask =
+const deleteObject =
     async (objectId, button) => {
         const requestOptions = {
             method: 'DELETE'
         };
-        const response = await fetch(`/objects/${objectId}`, requestOptions);
-        const received = await response.json();
-        JSONanswer.textContent = JSON.stringify(received);
+        await fetch(`/objects/${objectId}`, requestOptions);
         button.parentNode.replaceChild(createTmpSpan(), button);
-        window.setTimeout(updateTable, 3000);
-        displayMessage('supprimé');
-
+        displayMessage('objet supprimé');
+        window.setTimeout(displayTable, 2000);
     }
-
-const updateTable = () => {
-    JSONanswer.textContent = '';
-    updateTable();
-}
 
 
 const createTmpSpan = () => {
@@ -122,10 +121,11 @@ const buildButton = label => {
 
 
 const setup = () => {
-    getUser();
-    document.getElementById('user').textContent = `Welcome, ${username} !`;
+    username = document.getElementById('user');
+    getCurrentUser();
     document.getElementById('create').addEventListener('click', createObject);
-    displayMessage('stp');
+    displayTable();
+    displayMessage('Prêt');
 }
 
 // go !

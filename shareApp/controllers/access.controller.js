@@ -32,7 +32,7 @@ const register = async (req, res) => {
     }
     catch (err){
         console.log(`pb création utilisateur ${err.message}`);
-        res.status(409).json({ message : err.message });
+        res.status(409).json({ message : "Compte déjà existant !" });
     }
 }
 
@@ -55,9 +55,9 @@ const login = async (req, res) => {
                 return res.status(401).json({ message : 'mot de passe incorrect.'});
 
             // create and send token
-            const token = jwt.sign({id: user._id}, jwtConfig.SECRET_TOKEN, {expiresIn : '60s'} );
+            const token = jwt.sign({id: user._id}, jwtConfig.SECRET_TOKEN, {expiresIn : '300s'} );
             console.log(`login : ${token}`);
-            res.cookie('token', token,  { maxAge : 60000, httpOnly: true, sameSite : 'strict' })  // secure : true (avec https)
+            res.cookie('token', token,  { maxAge : 300000, httpOnly: true, sameSite : 'strict' })  // secure : true (avec https)
             res.status(200).json({ message : 'utilisateur connecté' });
         }
         else { // unknown login

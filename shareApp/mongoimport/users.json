@@ -1,0 +1,3 @@
+{"_id":{"$oid":"64221a60ccfd3928cf173d33"},"name":"walid","login":"walid","password":"$2b$10$ufQgVxMJ0d/DK7G0.jy2NunwxUZfGgS08uEdC1W6Q7le0MBhrBzd2","admin":false,"objectsBorrowed":[],"__v":0}
+{"_id":{"$oid":"64222fb13a14d9bfe6f10a56"},"name":"1","login":"1","password":"$2b$10$dd14H.7cFhcIO.e7Io3MH.XyWem.g9Nc/PFKdHP1qUVOwolMu5R2W","admin":false,"objectsBorrowed":[],"__v":0}
+{"_id":{"$oid":"642236f029e166cce0426ed2"},"name":"admin","login":"admin","password":"$2b$10$m64qjsxfj3vqbRFh/J2VSu5fWrcKmh0TUnLNFHv0WsdAVSSJMbXB.","admin":true,"objectsBorrowed":[],"__v":0}
