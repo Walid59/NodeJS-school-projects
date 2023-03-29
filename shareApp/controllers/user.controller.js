@@ -12,7 +12,7 @@ module.exports.me =
 
 module.exports.getUser =
     async (req,res) => {
-        const user = await User.findById( req.userId );
+        const user = await User.findById( req.params.userId );
         res.status(200).json(user);
     }
 

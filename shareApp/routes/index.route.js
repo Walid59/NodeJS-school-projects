@@ -8,8 +8,6 @@ const indexController = require('../controllers/index.controller');
 
 
 router.get('/', authMiddleware.validToken, indexController.login );
-router.get('/about', indexController.about );
-router.get('/adminonly', authMiddleware.validToken, authMiddleware.isAdmin, indexController.adminonly );
 
 
 router.get('/home', indexController.home);

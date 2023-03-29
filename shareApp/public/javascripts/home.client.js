@@ -28,31 +28,33 @@ const handleError = error => {
 
 
 const displayTable = async () => {
-    const objectsTable = document.getElementById('list');
-    objectsTable.textContent = '';
+    const objectsTable = document.getElementsByClassName('row');
+    objectsTable[0].textContent = '';
     const requestOptions = {
         method: 'GET'
     };
     const response = await fetch('/objects/', requestOptions);
     const allObjects = await response.json();
     for (let object of allObjects) {
-        const objectElement = buildTaskElement(object);
-        objectsTable.appendChild(objectElement);
+        const objectElement = buildObjectsElement(object);
+        objectsTable[0].appendChild(objectElement);
     }
 }
 
-const buildTaskElement = object => {
-    const objectElement = document.createElement('tr');
-    objectElement.className = 'object';
-    objectElement.appendChild(buildTD(object.description, 'description'));
-    objectElement.appendChild(buildTD(`(${getUser(object.ownerId).then(owner => owner.name)})`, 'ownerName'));
+
+const buildObjectsElement = object => {
+    const elem = buildDIV(object.description, 'description');
+    const span = document.createElement('div');
+    span.textContent = 'username (TODO)';
+    span.className = 'ownerName';
+    elem.appendChild(span);
+
     const deleteButton = buildButton('Supprimer l\'objet');
     deleteButton.addEventListener('click', () => deleteObject(object._id, deleteButton));
-    objectElement.appendChild(deleteButton);
+    elem.appendChild(deleteButton);
 
-    return objectElement;
+    return elem;
 }
-
 const createObject =
     async () => {
         description = document.getElementById('desc');
@@ -63,19 +65,17 @@ const createObject =
             headers: {"Content-Type": "application/json"},
             body: body
         };
-        try{
+        try {
             const response = await fetch(`/objects/`, requestOptions);
             const createdObject = await response.json();
             displayMessage(createdObject.description + " ajouté");
             await displayTable();
-        }
-        catch (Error){
+        } catch (Error) {
             displayMessage("error : restart the app");
         }
     }
 
- const getUser = async (ownerId) =>
-{
+const getUser = async (ownerId) => {
     const requestOptions = {
         method: 'GET'
     };
@@ -105,7 +105,13 @@ const createTmpSpan = () => {
     return span;
 }
 
-
+const buildDIV = (content, className) => {
+    const DIVelement = document.createElement('div');
+    DIVelement.className = "col-sm";
+    DIVelement.textContent = content;
+    DIVelement.classList.add(className);
+    return DIVelement;
+}
 const buildTD = (content, className) => {
     const TDelement = document.createElement('td');
     TDelement.textContent = content;
@@ -128,5 +134,4 @@ const setup = () => {
     displayMessage('Prêt');
 }
 
-// go !
 window.addEventListener('DOMContentLoaded', setup);
