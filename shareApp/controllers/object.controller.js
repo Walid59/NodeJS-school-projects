@@ -33,6 +33,12 @@ const deleteObject =
             throw error ;
         }
     }
-
 module.exports.deleteObject = deleteObject;
 
+const updateObject =
+  async (req, res) => {
+    const updatedObjectData = { ...req.body };
+    const updatedObject = await Objects.findByIdAndUpdate( req.params.objectId, updatedObjectData, { new : true } );
+    res.status(201).json(updatedObject);
+  }
+module.exports.updateObject = updateObject;

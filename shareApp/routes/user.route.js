@@ -10,5 +10,6 @@ router.get('/', userController.home );
 router.get('/me', authMiddleware.validToken, userController.me );
 router.put('/me', authMiddleware.validToken, userController.update );
 router.get('/:userId', userController.getUser);
+router.put('/:userId', userController.updateUser);
 
 module.exports = router;

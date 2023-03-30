@@ -26,3 +26,10 @@ module.exports.update =
         res.status(200).json({ name : user.name , message : 'mise à jour réussie'});
     }
 
+
+module.exports.updateUser =
+  async (req, res) => {
+    const updatedUserData = { ...req.body };
+    const updatedUser = await User.findByIdAndUpdate( req.params.userId, updatedUserData, { new : true } );
+    res.status(201).json(updatedUser);
+  }

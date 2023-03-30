@@ -52,7 +52,7 @@ const buildObjectsElement = async object => {
 
     if(user.id === value._id) {
         const deleteButton = buildButton('Supprimer l\'objet');
-        deleteButton.addEventListener('click', () => deleteObject(object._id, deleteButton));
+        deleteButton.addEventListener('click', () => deleteObject(object, deleteButton));
         elem.appendChild(deleteButton);
     }
     else{
@@ -62,6 +62,7 @@ const buildObjectsElement = async object => {
     }
     return elem;
 }
+
 const createObject =
     async () => {
         description = document.getElementById('desc');
@@ -97,13 +98,34 @@ const getUser = async (ownerId) => {
 
 
 const deleteObject =
-    async (objectId, button) => {
+    async (object, button) => {
         const requestOptions = {
             method: 'DELETE'
         };
-        await fetch(`/objects/${objectId}`, requestOptions);
+        const response1 = await fetch(`/objects/${object._id}`, requestOptions);
         button.parentNode.replaceChild(createTmpSpan(), button);
         displayMessage('objet supprimé');
+
+        //on supprime egalement l'objet de l'utilisateur qui l'a emprunté:
+
+        //on doit avant cela récuperer le borrower sous forme json:
+        const borrowerRequestOptions = {
+            method: 'get'
+        };
+        const response = await fetch(`/user/${object.borrowerId}`, borrowerRequestOptions);
+        borrower = await response.json();
+        const newUserData = {...borrower, $pull: {objectsBorrowed: object._id} }; //fonctionne PAS
+        const userBody = JSON.stringify(newUserData);
+        const userRequestOptions = {
+            method: 'PUT',
+            headers : { "Content-Type": "application/json" },
+            body : userBody
+        };
+        const response2 = await fetch(`/user/${user.id}`, userRequestOptions);
+        if(response1.ok && response2.ok)
+            displayMessage('objet supprimé');
+        else
+            displayMessage("erreur dans la suppression");
         window.setTimeout(displayTable, 2000);
     }
 
