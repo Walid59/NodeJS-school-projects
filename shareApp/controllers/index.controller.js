@@ -4,8 +4,6 @@ module.exports.login =
 module.exports.about =
     (req, res) => res.render('about');
 
-module.exports.adminonly =
-    (req, res) => res.render('adminonly');
 
 module.exports.home =
     (_, res) => {

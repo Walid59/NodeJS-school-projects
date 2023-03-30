@@ -37,22 +37,29 @@ const displayTable = async () => {
     const allObjects = await response.json();
     for (let object of allObjects) {
         const objectElement = buildObjectsElement(object);
-        objectsTable[0].appendChild(objectElement);
+        await objectsTable[0].appendChild(await objectElement);
     }
 }
 
 
-const buildObjectsElement = object => {
+const buildObjectsElement = async object => {
     const elem = buildDIV(object.description, 'description');
     const span = document.createElement('div');
-    span.textContent = 'username (TODO)';
+    let value = await getUser(object.ownerId);
+    span.textContent = `Appartient à : ${value.name}`;
     span.className = 'ownerName';
     elem.appendChild(span);
 
-    const deleteButton = buildButton('Supprimer l\'objet');
-    deleteButton.addEventListener('click', () => deleteObject(object._id, deleteButton));
-    elem.appendChild(deleteButton);
-
+    if(user.id === value._id) {
+        const deleteButton = buildButton('Supprimer l\'objet');
+        deleteButton.addEventListener('click', () => deleteObject(object._id, deleteButton));
+        elem.appendChild(deleteButton);
+    }
+    else{
+        const borrowButton = buildButton('Emprunter l\'objet');
+        borrowButton.addEventListener('click', () => borrowObject(object));
+        elem.appendChild(borrowButton);
+    }
     return elem;
 }
 const createObject =
@@ -80,9 +87,12 @@ const getUser = async (ownerId) => {
         method: 'GET'
     };
     const response = await fetch(`/user/${ownerId}`, requestOptions);
-    const owner = await response.json();
-    console.log(owner._id);
-    return owner;
+    if (response.ok) {
+        return await response.json();
+    } else {
+        const error = await response.json();
+        handleError(error);
+    }
 }
 
 
@@ -97,6 +107,36 @@ const deleteObject =
         window.setTimeout(displayTable, 2000);
     }
 
+const borrowObject =
+    async (object) => {
+    //deux situations à bien ajouter :
+        // -l'ajout de l'utilisateur qui emprunte l'objet dans la table object
+        // -l'ajout de l'objet à l'utilisateur dans la table user
+        //on commence par la premiere situation: l'ajout de l'utilisateur connecté qui emprunte l'objet dans la table object pour la colonne borrowerId
+        //ensuite la deuxieme: l'ajout de l'objectId à l'utilisateur dans la table user pour la colonne objectsBorrowed
+
+        const newObjectData = {...object, borrowerId: user.id};
+        const objectBody = JSON.stringify(newObjectData);
+        const objectRequestOptions = {
+            method: 'PUT',
+            headers : { "Content-Type": "application/json" },
+            body : objectBody
+        };
+        const response = await fetch(`/objects/${object._id}`, objectRequestOptions);
+
+        const newUserData = {...user, $push: {objectsBorrowed: object._id} };
+        const userBody = JSON.stringify(newUserData);
+        const userRequestOptions = {
+            method: 'PUT',
+            headers : { "Content-Type": "application/json" },
+            body : userBody
+        };
+        const response2 = await fetch(`/user/${user.id}`, userRequestOptions);
+        if(response.ok && response2.ok)
+            displayMessage('objet emprunté');
+        else
+            displayMessage("erreur dans l'emprunt");
+    }
 
 const createTmpSpan = () => {
     const span = document.createElement('span');
@@ -111,12 +151,6 @@ const buildDIV = (content, className) => {
     DIVelement.textContent = content;
     DIVelement.classList.add(className);
     return DIVelement;
-}
-const buildTD = (content, className) => {
-    const TDelement = document.createElement('td');
-    TDelement.textContent = content;
-    TDelement.className = className;
-    return TDelement;
 }
 
 const buildButton = label => {
