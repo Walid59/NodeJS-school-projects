@@ -46,7 +46,6 @@ const buildObjectsElement = async object => {
     const elem = buildDIV(object.description, 'description');
     const span = document.createElement('div');
     let value = await getUser(object);
-    console.log(value.name);
     span.textContent = `Appartient à : ${value.name}`;
     span.className = 'ownerName';
     elem.appendChild(span);
@@ -88,7 +87,7 @@ const getUser = async (object) => {
     const requestOptions = {
         method: 'GET'
     };
-    const response = await fetch(`/user/${object._id}`, requestOptions);
+    const response = await fetch(`/user/${object.ownerId}`, requestOptions);
     if (response.ok) {
         return await response.json();
     } else {
@@ -136,9 +135,9 @@ const borrowObject =
     //deux situations à bien ajouter :
         // -l'ajout de l'utilisateur qui emprunte l'objet dans la table object
         // -l'ajout de l'objet à l'utilisateur dans la table user
-        //on commence par la premiere situation: l'ajout de l'utilisateur connecté qui emprunte l'objet dans la table object pour la colonne borrowerId
-        //ensuite la deuxieme: l'ajout de l'objectId à l'utilisateur dans la table user pour la colonne objectsBorrowed
 
+
+        //on commence par la premiere situation: l'ajout de l'utilisateur connecté qui emprunte l'objet dans la table object pour la colonne borrowerId
         const newObjectData = {...object, borrowerId: user.id};
         const objectBody = JSON.stringify(newObjectData);
         const objectRequestOptions = {
@@ -148,7 +147,9 @@ const borrowObject =
         };
         const response = await fetch(`/objects/${object._id}`, objectRequestOptions);
 
-        const newUserData = {...user, $push: {objectsBorrowed: object._id} };
+
+        //ensuite la deuxieme: l'ajout de l'objectId à l'utilisateur dans la table user pour la colonne objectsBorrowed
+        const newUserData = {...user, $push: {objectsBorrowed: { $each:[], $slice:2}} };
         const userBody = JSON.stringify(newUserData);
         const userRequestOptions = {
             method: 'PUT',
