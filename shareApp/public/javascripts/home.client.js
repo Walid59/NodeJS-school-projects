@@ -45,7 +45,8 @@ const displayTable = async () => {
 const buildObjectsElement = async object => {
     const elem = buildDIV(object.description, 'description');
     const span = document.createElement('div');
-    let value = await getUser(object.ownerId);
+    let value = await getUser(object);
+    console.log(value.name);
     span.textContent = `Appartient à : ${value.name}`;
     span.className = 'ownerName';
     elem.appendChild(span);
@@ -83,16 +84,17 @@ const createObject =
         }
     }
 
-const getUser = async (ownerId) => {
+const getUser = async (object) => {
     const requestOptions = {
         method: 'GET'
     };
-    const response = await fetch(`/user/${ownerId}`, requestOptions);
+    const response = await fetch(`/user/${object._id}`, requestOptions);
     if (response.ok) {
         return await response.json();
     } else {
         const error = await response.json();
         handleError(error);
+        return error;
     }
 }
 
@@ -113,7 +115,7 @@ const deleteObject =
             method: 'get'
         };
         const response = await fetch(`/user/${object.borrowerId}`, borrowerRequestOptions);
-        borrower = await response.json();
+        let borrower = await response.json();
         const newUserData = {...borrower, $pull: {objectsBorrowed: object._id} }; //fonctionne PAS
         const userBody = JSON.stringify(newUserData);
         const userRequestOptions = {
