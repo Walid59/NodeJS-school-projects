@@ -111,9 +111,8 @@ const deleteObject =
         let borrower = await response1.json();
 
 // On supprime l'objet emprunté de la liste des objets empruntés de l'utilisateur
-            const objectsBorrowed = borrower.objectsBorrowed || [];
-            const newObjectsBorrowed = objectsBorrowed.filter((id) => id !== object.id);
-            const newUserData = { $unset: { objectsBorrowed: newObjectsBorrowed } };
+            const newObjectsBorrowed = borrower.objectsBorrowed.filter((id) => id !== object._id);
+            const newUserData = { $set: { objectsBorrowed: newObjectsBorrowed } };
 
 // On met à jour le document utilisateur
         const userRequestOptions = {
