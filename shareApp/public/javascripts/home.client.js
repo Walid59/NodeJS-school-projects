@@ -100,25 +100,20 @@ const getUser = async (object) => {
 
 const deleteObject =
     async (object, button) => {
-
-    //on supprime l'objet
-        const requestOptions = {
-            method: 'DELETE'
-        };
-        const response = await fetch(`/objects/${object._id}`, requestOptions);
-        button.parentNode.replaceChild(createTmpSpan(), button);
-        displayMessage('objet supprimé');
-
+        let res1 = true, res2 = true;
+        if(object.borrowerId !== undefined){
 // On récupère l'utilisateur
         const borrowerRequestOptions = {
             method: 'get'
         };
         const response1 = await fetch(`/user/${object.borrowerId}`, borrowerRequestOptions);
+        res1 = response1.ok;
         let borrower = await response1.json();
 
 // On supprime l'objet emprunté de la liste des objets empruntés de l'utilisateur
-        const newObjectsBorrowed = borrower.objectsBorrowed.filter((id) => id !== object._id);
-        const newUserData = { $set: { objectsBorrowed: newObjectsBorrowed } };
+            const objectsBorrowed = borrower.objectsBorrowed || [];
+            const newObjectsBorrowed = objectsBorrowed.filter((id) => id !== object.id);
+            const newUserData = { $unset: { objectsBorrowed: newObjectsBorrowed } };
 
 // On met à jour le document utilisateur
         const userRequestOptions = {
@@ -127,14 +122,23 @@ const deleteObject =
             body : JSON.stringify(newUserData)
         };
         const response2 = await fetch(`/user/${object.borrowerId}`, userRequestOptions);
+        res2 = response2.ok;
+    }
+//on supprime l'objet
+        const requestOptions = {
+            method: 'DELETE'
+        };
+        const response3 = await fetch(`/objects/${object._id}`, requestOptions);
+        button.parentNode.replaceChild(createTmpSpan(), button);
+        displayMessage('objet supprimé');
 
-        if(response.ok && response1.ok && response2.ok) {
+
+        if(response3.ok && res1 && res2) {
             displayMessage('objet supprimé');
         } else {
             displayMessage("erreur dans la suppression");
         }
         window.setTimeout(displayTable, 2000);
-
     }
 
 const borrowObject =
