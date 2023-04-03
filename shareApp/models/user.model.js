@@ -7,13 +7,10 @@ const userSchema = new mongoose.Schema({
     login : { type : String, required : true, unique : true},
     password : { type : String, required : true},
     admin : { type : Boolean, default: false },
-    objectsBorrowed: {type : [ mongoose.Schema.ObjectId ] ,set: array => setArrayMaxSize(array)}
+    objectsBorrowed:[
+        {type :  mongoose.Schema.ObjectId , ref: 'Object'}
+    ]
 });
-
-function setArrayMaxSize(array){
-    if(array.length > 2) return array.slice(0,2);
-    else return array;
-}
 
 module.exports = userSchema;
 

@@ -100,34 +100,41 @@ const getUser = async (object) => {
 
 const deleteObject =
     async (object, button) => {
+
+    //on supprime l'objet
         const requestOptions = {
             method: 'DELETE'
         };
-        const response1 = await fetch(`/objects/${object._id}`, requestOptions);
+        const response = await fetch(`/objects/${object._id}`, requestOptions);
         button.parentNode.replaceChild(createTmpSpan(), button);
         displayMessage('objet supprimé');
 
-        //on supprime egalement l'objet de l'utilisateur qui l'a emprunté:
-
-        //on doit avant cela récuperer le borrower sous forme json:
+// On récupère l'utilisateur
         const borrowerRequestOptions = {
             method: 'get'
         };
-        const response = await fetch(`/user/${object.borrowerId}`, borrowerRequestOptions);
-        let borrower = await response.json();
-        const newUserData = {...borrower, $pull: {objectsBorrowed: object._id} }; //fonctionne PAS
-        const userBody = JSON.stringify(newUserData);
+        const response1 = await fetch(`/user/${object.borrowerId}`, borrowerRequestOptions);
+        let borrower = await response1.json();
+
+// On supprime l'objet emprunté de la liste des objets empruntés de l'utilisateur
+        const newObjectsBorrowed = borrower.objectsBorrowed.filter((id) => id !== object._id);
+        const newUserData = { $set: { objectsBorrowed: newObjectsBorrowed } };
+
+// On met à jour le document utilisateur
         const userRequestOptions = {
             method: 'PUT',
             headers : { "Content-Type": "application/json" },
-            body : userBody
+            body : JSON.stringify(newUserData)
         };
-        const response2 = await fetch(`/user/${user.id}`, userRequestOptions);
-        if(response1.ok && response2.ok)
+        const response2 = await fetch(`/user/${object.borrowerId}`, userRequestOptions);
+
+        if(response.ok && response1.ok && response2.ok) {
             displayMessage('objet supprimé');
-        else
+        } else {
             displayMessage("erreur dans la suppression");
+        }
         window.setTimeout(displayTable, 2000);
+
     }
 
 const borrowObject =
@@ -149,7 +156,7 @@ const borrowObject =
 
 
         //ensuite la deuxieme: l'ajout de l'objectId à l'utilisateur dans la table user pour la colonne objectsBorrowed
-        const newUserData = {...user, $push: {objectsBorrowed: { $each:[], $slice:2}} };
+        const newUserData = {...user, $push: {objectsBorrowed: { $each:[object._id], $slice:2}} };
         const userBody = JSON.stringify(newUserData);
         const userRequestOptions = {
             method: 'PUT',

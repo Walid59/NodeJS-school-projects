@@ -12,6 +12,6 @@ module.exports = objectSchema;
 
 // model
 const dbConnection = require('../controllers/db.controller');
-const User = dbConnection.model('AppBase',objectSchema,'objects');
+const Object = dbConnection.model('AppBase',objectSchema,'objects');
 
-module.exports.model = User
+module.exports.model = Object
