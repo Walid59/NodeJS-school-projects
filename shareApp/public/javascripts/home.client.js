@@ -1,6 +1,7 @@
 let username;
 let description;
 let user;
+let usernameField;
 
 
 const displayMessage = msg => document.getElementById('content').textContent = msg;
@@ -29,6 +30,7 @@ const handleError = error => {
 
 const displayTable = async () => {
     const objectsTable = document.getElementsByClassName('row');
+    const myLoanedObjectsTable = document.getElementById('myList');
     objectsTable[0].textContent = '';
     const requestOptions = {
         method: 'GET'
@@ -36,13 +38,18 @@ const displayTable = async () => {
     const response = await fetch('/objects/', requestOptions);
     const allObjects = await response.json();
     for (let object of allObjects) {
-        const objectElement = buildObjectsElement(object);
-        await objectsTable[0].appendChild(await objectElement);
+        const objectElement = buildObjectElement(object);
+        for (const myLoanedObject in user.objectsBorrowed) {
+            if(user.objectsBorrowed[myLoanedObject] === object._id)
+                await myLoanedObjectsTable.appendChild(await objectElement);
+        }
+            if(user.objectsBorrowed[0] !== object._id && user.objectsBorrowed[1] !== object._id )
+            await objectsTable[0].appendChild(await objectElement);
     }
 }
 
 
-const buildObjectsElement = async object => {
+const buildObjectElement = async object => {
     const elem = buildDIV(object.description, 'description');
     const span = document.createElement('div');
     let value = await getUser(object);
@@ -50,15 +57,33 @@ const buildObjectsElement = async object => {
     span.className = 'ownerName';
     elem.appendChild(span);
 
+
     if(user.id === value._id) {
         const deleteButton = buildButton('Supprimer l\'objet');
         deleteButton.addEventListener('click', () => deleteObject(object, deleteButton));
         elem.appendChild(deleteButton);
     }
+    else if(user.objectsBorrowed[0] === object._id || user.objectsBorrowed[1] === object._id ){
+        for (const myLoanedObject in user.objectsBorrowed){
+            if(user.objectsBorrowed[myLoanedObject] === object._id){
+                const renderObjectButton = buildButton('rendre l\'objet');
+                renderObjectButton.addEventListener('click', () => renderObject(object));
+                elem.appendChild(renderObjectButton);
+            }
+        }
+    }
+
     else{
-        const borrowButton = buildButton('Emprunter l\'objet');
-        borrowButton.addEventListener('click', () => borrowObject(object));
-        elem.appendChild(borrowButton);
+        if(user.objectsBorrowed.size !== 2){
+            const borrowButton = buildButton('Emprunter l\'objet');
+            borrowButton.addEventListener('click', () => borrowObject(object));
+            elem.appendChild(borrowButton);
+        }else{
+            const borrowButton = buildButton('limite atteinte');
+            borrowButton.disabled = true;
+            elem.appendChild(borrowButton);
+        }
+
     }
     return elem;
 }
@@ -82,6 +107,39 @@ const createObject =
             displayMessage("error : restart the app");
         }
     }
+
+const renderObject =
+    async (object) => {
+        //deux situations à bien ajouter :
+        // -le retrait de l'objet prêté dans la liste des objets prêtés de l'utilisateur (objectBorrowed -> unset)
+        // -le retrait de l'emprunteur dans l'objet (borrowerId -> null)
+
+
+        //on commence par la premiere situation: le retrait de l'objet prêté dans la liste des objets prêtés de l'utilisateur (objectBorrowed -> unset)
+        const newObjectData = {...object, $unset: {borrowerId: 1}};
+        const objectBody = JSON.stringify(newObjectData);
+        const objectRequestOptions = {
+            method: 'PUT',
+            headers : { "Content-Type": "application/json" },
+            body : objectBody
+        };
+        const response = await fetch(`/objects/${object._id}`, objectRequestOptions);
+
+// On supprime l'objet emprunté de la liste des objets empruntés de l'utilisateur
+        const newObjectsBorrowed = user.objectsBorrowed.filter((id) => id !== object._id);
+        const newUserData = { $set: { objectsBorrowed: newObjectsBorrowed } };
+
+// On met à jour le document utilisateur
+        const userRequestOptions = {
+            method: 'PUT',
+            headers : { "Content-Type": "application/json" },
+            body : JSON.stringify(newUserData)
+        };
+        const response2 = await fetch(`/user/${object.borrowerId}`, userRequestOptions);
+        if(response.ok && response2.ok)
+            displayMessage('objet retiré de la liste des emprunts');
+    }
+
 
 const getUser = async (object) => {
     const requestOptions = {
@@ -159,7 +217,7 @@ const borrowObject =
 
 
         //ensuite la deuxieme: l'ajout de l'objectId à l'utilisateur dans la table user pour la colonne objectsBorrowed
-        const newUserData = {...user, $push: {objectsBorrowed: { $each:[object._id], $slice:2}} };
+        const newUserData = { $addToSet: { objectsBorrowed: object._id } };
         const userBody = JSON.stringify(newUserData);
         const userRequestOptions = {
             method: 'PUT',
@@ -194,11 +252,43 @@ const buildButton = label => {
     return button;
 }
 
+const updateUser =  async () => {
+    const userData = { name : usernameField.value };
+    const body = JSON.stringify(userData);
+    const requestOptions = {
+        method :'PUT',
+        headers : { "Content-Type": "application/json" },
+        body : body
+    };
+    const response = await fetch('/user/me', requestOptions);
+    if (response.ok) {
+        const updatedUser = await response.json();
+        console.log(`user updated : ${JSON.stringify(updatedUser)}`);
+    }
+    else {
+        const error = await response.json();
+        handleError(error);
+    }
+}
+
+const logout = async () => {
+    const requestOptions = {
+        method :'GET',
+    };
+    const response = await fetch(`/access/logout`, requestOptions);
+    if (response.ok) {
+        window.location.href= '/';
+    }
+}
 
 const setup = () => {
     username = document.getElementById('user');
+    usernameField = document.getElementById('username');
+
     getCurrentUser();
     document.getElementById('create').addEventListener('click', createObject);
+    document.getElementById('update').addEventListener('click', updateUser);
+    document.getElementById('logout').addEventListener('click', logout);
     displayTable();
     displayMessage('Prêt');
 }

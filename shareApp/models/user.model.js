@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     admin : { type : Boolean, default: false },
     objectsBorrowed:[
         {type :  mongoose.Schema.ObjectId , ref: 'Object'}
-    ]
+    ].slice(0,2)
 });
 
 module.exports = userSchema;
