@@ -1,6 +1,6 @@
 const User = require('../models/user.model').model;
 
-module.exports.home = (_,res) => res.redirect('/user.html');
+module.exports.home = (_,res) => res.redirect('/home.html');
 
 module.exports.me =
     async (req, res) =>  {

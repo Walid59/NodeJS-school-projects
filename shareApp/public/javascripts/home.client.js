@@ -1,9 +1,42 @@
 let username;
 let description;
 let user;
+let usernameField;
 
 
 const displayMessage = msg => document.getElementById('content').textContent = msg;
+
+const updateUser =  async () => {
+    const userData = { name : usernameField.value };
+    const body = JSON.stringify(userData);
+    const requestOptions = {
+        method :'PUT',
+        headers : { "Content-Type": "application/json" },
+        body : body
+    };
+    const response = await fetch('/user/me', requestOptions);
+    if (response.ok) {
+        const updatedUser = await response.json();
+        console.log(`user updated : ${JSON.stringify(updatedUser)}`);
+        getCurrentUser();
+    }
+    else {
+        const error = await response.json();
+        handleError(error);
+    }
+}
+
+const logout = async () => {
+    const requestOptions = {
+        method :'GET',
+    };
+    const response = await fetch(`/access/logout`, requestOptions);
+    if (response.ok) {
+        window.location.href= '/';
+    }
+}
+
+
 
 const getCurrentUser = async () => {
     const requestOptions = {
@@ -197,8 +230,14 @@ const buildButton = label => {
 
 const setup = () => {
     username = document.getElementById('user');
+    usernameField = document.getElementById('username');
+
+
     getCurrentUser();
     document.getElementById('create').addEventListener('click', createObject);
+    document.getElementById('update').addEventListener('click', updateUser);
+    document.getElementById('logout').addEventListener('click', logout);
+
     displayTable();
     displayMessage('Prêt');
 }
