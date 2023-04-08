@@ -24,7 +24,6 @@
 
 3) mongoimport --db appBase --collection users --type json --file ./mongoimport/users.json
 4) mongoimport --db appBase --collection objects --type json --file ./mongoimport/objects.json
-5) 
 6) npm install
 7) nodemon
 8) Vous pouvez maintenant vous connecter.   
