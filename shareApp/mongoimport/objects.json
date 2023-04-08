@@ -1,4 +1,0 @@
-{"_id":{"$oid":"6422371329e166cce0426ef7"},"description":"jouet","ownerId":{"$oid":"642236f029e166cce0426ed2"},"__v":0}
-{"_id":{"$oid":"6422371c29e166cce0426efd"},"description":"un objet banal","ownerId":{"$oid":"642236f029e166cce0426ed2"},"__v":0}
-{"_id":{"$oid":"6422372029e166cce0426f05"},"description":"livre","ownerId":{"$oid":"642236f029e166cce0426ed2"},"__v":0}
-{"_id":{"$oid":"6422372229e166cce0426f0b"},"description":"télé","ownerId":{"$oid":"642236f029e166cce0426ed2"},"__v":0}
