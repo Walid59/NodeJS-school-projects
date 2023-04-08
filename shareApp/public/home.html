@@ -7,12 +7,15 @@
     <title>TODO app</title>
     <link href="stylesheets/style.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css"/>
-    <script src="javascripts/home.client.js" defer></script>
+    <script type="module" src="javascripts/home.client.js" defer></script>
 
 </head>
 
 <body>
-<h1>Share & borrow app</h1>
+<h1>Application de partage et d'emprunt</h1>
+<h2 id="user">
+</h2>
+<h3>A propos de moi</h3>
 
 <div id="userdata">
     <div>
@@ -26,13 +29,15 @@
     <button id="logout">logout</button>
 </div>
 
+<h3>Mes objets possedés & empruntés</h3>
+<div class="container">
+    <div class="row" id="myList">
+
+    </div>
+</div>
 
 
-
-<h2 id="user">
-
-</h2>
-
+<h3>Liste d'objets disponibles à l'emprunt</h3>
 <div id="content">
 
 </div>
@@ -43,7 +48,7 @@
 </div>
 
 <div class="container">
-    <div class="row">
+    <div class="row" id="availableObjects">
 
     </div>
 </div>

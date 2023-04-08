@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // definition of schema
 const objectSchema = new mongoose.Schema({
     description : String,
-    borrowerId : { type : mongoose.Schema.ObjectId, required : false, unique : true, index:true, sparse: true},
+    borrowerId : { type : mongoose.Schema.ObjectId, index:true, sparse: true},
     ownerId : {type: mongoose.Schema.ObjectId, required: true, index:true, sparse: true}
 });
 

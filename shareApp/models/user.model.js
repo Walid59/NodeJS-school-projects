@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     password : { type : String, required : true},
     admin : { type : Boolean, default: false },
     objectsBorrowed:[
-        {type :  mongoose.Schema.ObjectId , ref: 'Object'}
+        {type :  mongoose.Schema.ObjectId , ref: 'Object', unique: true, sparse: true}
     ]
 });
 

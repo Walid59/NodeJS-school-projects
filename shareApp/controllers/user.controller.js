@@ -5,7 +5,7 @@ module.exports.home = (_,res) => res.redirect('/home.html');
 module.exports.me =
     async (req, res) =>  {
         const user = await User.findById(req.userId);
-        res.status(200).json({ id : user._id, name : user.name });
+        res.status(200).json({ id : user._id, name : user.name, objectsBorrowed: user.objectsBorrowed });
     }
 
 module.exports.getUser =
