@@ -13,6 +13,9 @@ server/public/
 #mongodb files
 mongo_files
 
+#sonar
+/.scannerwork
+
 ### Node ###
 # Logs
 logs
