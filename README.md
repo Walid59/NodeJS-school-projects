@@ -1,6 +1,6 @@
 # JSFS2_ROUABAH_WALID
 
-# **Comment lancer le tp1 & 2 (basic**
+# **Comment lancer le tp1 & 2 (trivialServer et chart)**
 1) cd [tp/projet souhaité]  
 2) npm install  
 3) nodemon OU npm run start
