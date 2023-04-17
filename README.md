@@ -1,6 +1,6 @@
 # JSFS2_ROUABAH_WALID
 
-# **Comment lancer le tp1 & 2**
+# **Comment lancer le tp1 & 2 (basic**
 1) cd [tp/projet souhaité]  
 2) npm install  
 3) nodemon OU npm run start
